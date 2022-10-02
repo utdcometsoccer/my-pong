@@ -177,15 +177,15 @@ export default class Pong extends Phaser.Scene {
   }
 
   scorePlayer1() {
-    this.reset();
-    this._player1Score++;
+    this.reset();    
+    this._player2Score++;
+    this._player2ScoreText.setText(`Player 2: ${this._player2Score}`);
     console.log(`Player 1 score is: ${this._player1Score}`);
-    this._player1ScoreText.setText(`Player 1: ${this._player1Score}`);
   }
   scorePlayer2() {
-    this.reset();
-    this._player2Score++;
-    console.log(`Player 2 score is: ${this._player2Score}`);
-    this._player2ScoreText.setText(`Player 2: ${this._player2Score}`);
+    this.reset();    
+    this._player1Score++;
+    this._player1ScoreText.setText(`Player 1: ${this._player1Score}`);
+    console.log(`Player 2 score is: ${this._player2Score}`);    
   }
 }
