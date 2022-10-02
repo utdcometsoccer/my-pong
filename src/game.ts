@@ -5,7 +5,7 @@ import Pong from "./Pong";
 function GameLoad(height: number, width: number) {
   new Phaser.Game( {
     type: Phaser.AUTO,
-    backgroundColor: "#125555",
+    backgroundColor: "#000000",
     width: width,
     height: height,
     scene: Pong,
