@@ -3,6 +3,7 @@ import "phaser";
 import { IKeyboard } from "./Keyboard";
 
 export default class Pong extends Phaser.Scene {
+  private _velocityDeflection = 1;
   private _player1: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private _player2: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private _ball: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -16,6 +17,7 @@ export default class Pong extends Phaser.Scene {
   private _player2ScoreText: Phaser.GameObjects.Text;
   private _centerx;
   private _centery;
+  private _paused;
   constructor() {
     super("pong");
   }
@@ -26,6 +28,7 @@ export default class Pong extends Phaser.Scene {
   }
 
   create() {
+    this._paused = false;
     this._centerx = this.physics.world.bounds.width / 2;
     this._centery = this.physics.world.bounds.height / 2;
     this._player1Score = this._player2Score = 0;
@@ -50,6 +53,7 @@ export default class Pong extends Phaser.Scene {
     this._cursors = this.input.keyboard.createCursorKeys();
     this._keys.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this._keys.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    this._keys.p = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
     this._player1.setCollideWorldBounds(true);
     this._player2.setCollideWorldBounds(true);
@@ -109,6 +113,14 @@ export default class Pong extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
+    if(this._keys.p.isDown){
+      this._paused = !this._paused;
+    }
+    if(!this._paused){
+      this.gameStep(time, delta);
+    } 
+  }
+  gameStep(time: number, delta: number){
     if (this.isPlayer1Point()) {
       this.scorePlayer1();
       //this._ball.disableBody(true, true);
@@ -141,14 +153,20 @@ export default class Pong extends Phaser.Scene {
       if (this._cursors.space.isDown) {
         this._ball.setVisible(true);
         this._gameStarted = true;
-        const initialXSpeed = Math.random() * 200 + 50;
-        const initialYSpeed = Math.random() * 200 + 50;
-        this._ball.setVelocityX(initialXSpeed);
-        this._ball.setVelocityY(initialYSpeed);       
+        this.initialVelocity();       
         this._openingText.setVisible(false);
+        console.log('Game Start!');
       }
     }
+    this.logGameInfo();
   }
+  initialVelocity() {
+    const initialXSpeed = Math.random() * 200 + 50 * this._velocityDeflection;
+    const initialYSpeed = Math.random() * 200 + 50 * this._velocityDeflection;
+    this._ball.setVelocityX(initialXSpeed);
+    this._ball.setVelocityY(initialYSpeed);
+  }
+
   isPlayer1Point() {
     return this._ball.body.x < this._player2.body.x;
   }
@@ -161,19 +179,41 @@ export default class Pong extends Phaser.Scene {
     ball: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
     player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
   ) {
+    const ballVelocity = ball.body.velocity;
+    const accelerationX = ballVelocity.x > 0 ? 1:-1;
+    ball.body.setAccelerationX(accelerationX); 
+    console.log("hit!");
+    
+  }
+  private logGameInfo() {
     console.log(
-      `Hit Player! x:${player.body.position.x}, y:${player.body.position.y}`
+      `Hit Player! x:${this._player1.body.position.x}, y:${this._player1.body.position.y}`
     );
     console.log(
-      `Ball position x:${ball.body.position.x}, y:${ball.body.position.y}`
+      `Hit Player! x:${this._player2.body.position.x}, y:${this._player2.body.position.y}`
+    );
+    console.log(
+      `Ball position x:${this._ball.body.position.x}, y:${this._ball.body.position.y}`
+    );
+    console.log(
+      `Ball Velocity x:${this._ball.body.velocity.x}, y:${this._ball.body.velocity.y}`
+    );
+    console.log(
+      `Ball Accelaration x:${this._ball.body.acceleration.x}, y:${this._ball.body.acceleration.y}`
     );
   }
 
+  toggleVeloctiyDeflection(){
+    this._velocityDeflection = -1 * this._velocityDeflection ;
+  }
+
   reset() {
-    this._gameStarted = false;
     this._player1.body.setVelocityY(0);
     this._player2.body.setVelocityY(0);
     this._ball.setPosition( this._centerx, this._centery);
+    this.toggleVeloctiyDeflection();
+    this.initialVelocity();
+    console.log('Reset!');
   }
 
   scorePlayer1() {
