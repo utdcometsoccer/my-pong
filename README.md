@@ -1,12 +1,15 @@
-# Phaser 3 TypeScript Project Template
+# Pong Demo
+Trying to locate the original Phaser Pong demo we copied to start this to properly credit this. If you recognize some of your code, yes I copied it from you!
+
+## Phaser 3 TypeScript Project Template
 
 This quick-start project template combines Phaser 3.50 with [TypeScript 4](https://www.typescriptlang.org/) and uses [Rollup](https://rollupjs.org) for bundling.
 
-## Requirements
+### Requirements
 
 [Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
 
-## Available Commands
+### Available Commands
 
 | Command | Description |
 |---------|-------------|
@@ -15,7 +18,7 @@ This quick-start project template combines Phaser 3.50 with [TypeScript 4](https
 | `npm run dev` | Builds project and open web server, but do not watch for changes |
 | `npm run build` | Builds code bundle with production settings (minification, no source maps, etc..) |
 
-## Writing Code
+### Writing Code
 
 After cloning the repo, run `npm install` from your project directory. Then, you can start the local development
 server by running `npm run watch`. The first time you run this you should see the following demo run:
@@ -26,7 +29,7 @@ After starting the development server with `npm run watch`, you can edit any fil
 and Rollup will automatically recompile and reload your server (available at `http://localhost:10001`
 by default).
 
-## Configuring Rollup
+### Configuring Rollup
 
 * Edit the file `rollup.config.dev.js` to edit the development build.
 * Edit the file `rollup.config.dist.js` to edit the distribution build.
