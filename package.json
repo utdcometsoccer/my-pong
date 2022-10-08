@@ -1,7 +1,7 @@
 {
     "name": "phaser3-typescript-project-template",
     "version": "1.0.2",
-    "description": "A Phaser 3 Project Template using Rollup and TypeScript",
+    "description": "Pong built with Phaser 3, TypeScript, and a convenient template",
     "main": "src/game.ts",
     "scripts": {
         "dev": "rollup --config rollup.config.dev.js",
@@ -12,12 +12,12 @@
         "type": "git",
         "url": "git+https://github.com/photonstorm/phaser3-typescript-project-template.git"
     },
-    "author": "Richard Davey <rich@photonstorm.com> (http://www.photonstorm.com)",
+    "author": "Idaho Edokpayi <idaho@edokpayi.com> (http://edokpayi.com)",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/photonstorm/phaser3-typescript-project-template/issues"
+        "url": "https://github.com/utdcometsoccer/my-pong/issues"
     },
-    "homepage": "https://github.com/photonstorm/phaser3-typescript-project-template#readme",
+    "homepage": "https://github.com/utdcometsoccer/my-pong#readme",
     "dependencies": {},
     "devDependencies": {
         "@rollup/plugin-replace": "^2.3.4",
