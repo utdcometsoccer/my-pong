@@ -10,8 +10,12 @@ export default class Pong extends Phaser.Scene {
   private _keys: IKeyboard = {};
   private _gameStarted: boolean;
   private _openingText: Phaser.GameObjects.Text;
-  private _player1VictoryText: Phaser.GameObjects.Text;
-  private _player2VictoryText: Phaser.GameObjects.Text;
+  private _player1Score: number;
+  private _player2Score: number;
+  private _player1ScoreText: Phaser.GameObjects.Text;
+  private _player2ScoreText: Phaser.GameObjects.Text;
+  private _centerx;
+  private _centery;
   constructor() {
     super("pong");
   }
@@ -22,9 +26,12 @@ export default class Pong extends Phaser.Scene {
   }
 
   create() {
+    this._centerx = this.physics.world.bounds.width / 2;
+    this._centery = this.physics.world.bounds.height / 2;
+    this._player1Score = this._player2Score = 0;
     this._ball = this.physics.add.sprite(
-      this.physics.world.bounds.width / 2, // x position
-      this.physics.world.bounds.height / 2, // y position
+      this._centerx, // x position
+      this._centery, // y position
       "ball" // key of image for the sprite
     );
     this._ball.setVisible(false);
@@ -50,8 +57,8 @@ export default class Pong extends Phaser.Scene {
     this._ball.setBounce(1, 1);
     this._player1.setImmovable(true);
     this._player2.setImmovable(true);
-    this.physics.add.collider(this._ball, this._player1, null, null, this);
-    this.physics.add.collider(this._ball, this._player2, null, null, this);
+    this.physics.add.collider(this._ball, this._player1, this.hitPlayer, null, this);
+    this.physics.add.collider(this._ball, this._player2, this.hitPlayer, null, this);
 
     this._openingText = this.add.text(
       this.physics.world.bounds.width / 2,
@@ -67,10 +74,10 @@ export default class Pong extends Phaser.Scene {
     this._openingText.setOrigin(0.5);
 
     // Create player 1 victory text
-    this._player1VictoryText = this.add.text(
-      this.physics.world.bounds.width / 2,
+    this._player1ScoreText = this.add.text(
+      this.physics.world.bounds.width * 0.25,
       this.physics.world.bounds.height / 2,
-      "Point for player 1!",
+      "Player 1: 0",
       {
         fontFamily: "Monaco, Courier, monospace",
         fontSize: "50px",
@@ -78,16 +85,16 @@ export default class Pong extends Phaser.Scene {
       }
     );
 
-    this._player1VictoryText.setOrigin(0.5);
+    this._player1ScoreText.setOrigin(0.5);
 
     // Make it invisible until the player loses
-    this._player1VictoryText.setVisible(false);
+    this._player1ScoreText.setVisible(true);
 
     // Create the game won text
-    this._player2VictoryText = this.add.text(
-      this.physics.world.bounds.width / 2,
+    this._player2ScoreText = this.add.text(
+      this.physics.world.bounds.width * 0.75,
       this.physics.world.bounds.height / 2,
-      "Point for player 2!",
+      "Player 2: 0",
       {
         fontFamily: "Monaco, Courier, monospace",
         fontSize: "50px",
@@ -95,21 +102,21 @@ export default class Pong extends Phaser.Scene {
       }
     );
 
-    this._player2VictoryText.setOrigin(0.5);
+    this._player2ScoreText.setOrigin(0.5);
 
     // Make it invisible until the player wins
-    this._player2VictoryText.setVisible(false);
+    this._player2ScoreText.setVisible(true);
   }
 
   update(time: number, delta: number): void {
     if (this.isPlayer1Point()) {
-      this._player1VictoryText.setVisible(true);
-      this._ball.disableBody(true, true);
+      this.scorePlayer1();
+      //this._ball.disableBody(true, true);
       return;
     }
     if (this.isPlayer2Point()) {
-      this._player2VictoryText.setVisible(true);
-      this._ball.disableBody(true, true);
+      this.scorePlayer2();
+      //this._ball.disableBody(true, true);
       return;
     }
 
@@ -137,7 +144,7 @@ export default class Pong extends Phaser.Scene {
         const initialXSpeed = Math.random() * 200 + 50;
         const initialYSpeed = Math.random() * 200 + 50;
         this._ball.setVelocityX(initialXSpeed);
-        this._ball.setVelocityY(initialYSpeed);
+        this._ball.setVelocityY(initialYSpeed);       
         this._openingText.setVisible(false);
       }
     }
@@ -150,7 +157,35 @@ export default class Pong extends Phaser.Scene {
     return this._ball.body.x > this._player1.body.x;
   }
 
-  hitPlayer(ball, player) {
-    // custom logic for changing ball x or y velocity
+  hitPlayer(
+    ball: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
+    player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+  ) {
+    console.log(
+      `Hit Player! x:${player.body.position.x}, y:${player.body.position.y}`
+    );
+    console.log(
+      `Ball position x:${ball.body.position.x}, y:${ball.body.position.y}`
+    );
+  }
+
+  reset() {
+    this._gameStarted = false;
+    this._player1.body.setVelocityY(0);
+    this._player2.body.setVelocityY(0);
+    this._ball.setPosition( this._centerx, this._centery);
+  }
+
+  scorePlayer1() {
+    this.reset();    
+    this._player2Score++;
+    this._player2ScoreText.setText(`Player 2: ${this._player2Score}`);
+    console.log(`Player 1 score is: ${this._player1Score}`);
+  }
+  scorePlayer2() {
+    this.reset();    
+    this._player1Score++;
+    this._player1ScoreText.setText(`Player 1: ${this._player1Score}`);
+    console.log(`Player 2 score is: ${this._player2Score}`);    
   }
 }
